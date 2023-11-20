@@ -1,4 +1,4 @@
-package DTO
+package dto
 
 import (
 	"time"
@@ -58,4 +58,12 @@ type QueueInfo struct {
 }
 
 type Customer struct {
+	Name    string `json:"name" bson:"name"`
+	Phone   Phone  `json:"phone" bson:"phone"`
+	Address string `json:"address" bson:"address"`
+}
+
+type Phone struct {
+	CountryCode string `json:"country_code" bson:"country_code"`
+	Number      string `json:"number" bson:"number"`
 }
