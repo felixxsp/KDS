@@ -1,9 +1,10 @@
-package TaskOrder
+package kitchen
 
 import (
-	"Kitchen/DTO"
+	"Kitchen/domain"
 	"context"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,24 +21,32 @@ func InitTaskOrderHandler(router *gin.Engine, uc *TaskOrderUsecase) *TaskOrderHa
 	}
 }
 
-func (Handler *TaskOrderHandler) Standby(ctx context.Context) {
-	Handler.Router.GET("/TaskOrder/all", func(ctx *gin.Context) {
-		TaskOrder, err := Handler.UC.getTaskOrders(ctx)
-		if err != nil {
-			ctx.IndentedJSON(http.StatusBadRequest, "")
-		} else {
-			ctx.IndentedJSON(http.StatusOK, TaskOrder)
-		}
-	})
+func (Handler *TaskOrderHandler) Standby(c context.Context) {
+	Handler.Router.POST("/orderGroup/:id", Handler.NewOrderGroup)
+	Handler.Router.POST("/taskOrder/:id", Handler.NewKitchenTask)
+	Handler.Router.GET("/taskOrder/:id", Handler.GetKitchenTask)
 
-	Handler.Router.POST("/TaskOrder", func(ctx *gin.Context) {
-		var Incoming DTO.TaskOrder
-		ctx.BindJSON(&Incoming)
-		err := Handler.UC.insertTaskOrder(ctx, Incoming)
-		if err != nil {
-			ctx.IndentedJSON(http.StatusBadRequest, "")
-		} else {
-			ctx.IndentedJSON(http.StatusOK, Incoming)
-		}
-	})
+}
+
+func (handler *TaskOrderHandler) NewOrderGroup(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	errInt := handler.UC.NewOrderGroup(c, id)
+	if errInt == 200 {
+		c.IndentedJSON(http.StatusOK, "Created new order group")
+	} else {
+		c.IndentedJSON(http.StatusBadRequest, "Duplicate table ID")
+	}
+}
+
+func (handler *TaskOrderHandler) NewKitchenTask(c *gin.Context) {
+	var Incoming domain.KitchenTask
+	id, _ := strconv.Atoi(c.Param("id"))
+	c.BindJSON(&Incoming)
+	handler.UC.NewKitchenTask(c, Incoming, id)
+}
+
+func (handler *TaskOrderHandler) GetKitchenTask(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	output, _ := handler.UC.GetKitchenTask(c, id)
+	c.IndentedJSON(http.StatusOK, output)
 }
