@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Kitchen/TaskOrder"
+	"Kitchen/kitchen"
 	"context"
 
 	"github.com/gin-gonic/gin"
@@ -15,12 +15,14 @@ func main() {
 	router := gin.Default()
 
 	client, _ := mongo.Connect(mainCtx, options.Client().ApplyURI("mongodb://localhost:27017"))
-	database := client.Database("Kitchen")
+	database := client.Database("kitchen")
 
-	TaskOrderRepo := TaskOrder.InitTaskOrderRepo(database)
-	TaskorderUsecase := TaskOrder.InitTaskOrderUsecase(TaskOrderRepo)
-	TaskOrderHandler := TaskOrder.InitTaskOrderHandler(router, TaskorderUsecase)
+	TaskOrderRepo := kitchen.InitTaskOrderRepo(database)
+	TaskorderUsecase := kitchen.InitTaskOrderUsecase(TaskOrderRepo)
+	TaskOrderHandler := kitchen.InitTaskOrderHandler(router, TaskorderUsecase)
 	TaskOrderHandler.Standby(mainCtx)
 
-	router.Run(":6969")
+	//fmt.Println(TaskOrderHandler.UC.GetKitchenTask(mainCtx, 20))
+	router.Run(":8080")
+
 }
