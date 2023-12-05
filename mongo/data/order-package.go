@@ -1,12 +1,10 @@
 package myMongo
 
 import (
-	"context"
-
 	"github.com/google/uuid"
 )
 
-type Task struct {
+type KitchenTask struct {
 	UUID        uuid.UUID `json:"uuid" bson:"uuid"`
 	Name        string    `json:"name" bson:"name"`
 	Priority    int       `json:"priority" bson:"priority"`
@@ -26,15 +24,3 @@ type Order struct {
 
 	CompletedAt *int64 `json:"completed_at" bson:"completed_at"`
 }
-
-type TaskOrderRepository interface {
-	getTaskOrders(ctx context.Context) ([]OrderGroup, error)
-	insertTaskOrder(ctx context.Context, task OrderGroup) error
-}
-
-// func domainToDto(oldItem OrderGroup) dto.KitchenTask {
-// 	return dto.KitchenTask{
-// 		UUID: oldItem.UUID,
-// 		Name: ,
-// 	}
-// }

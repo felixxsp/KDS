@@ -11,7 +11,7 @@ type OrderGroup struct {
 	Space    *SpaceInfo    `json:"space" bson:"space"`
 	Queue    *QueueInfo    `json:"queue" bson:"queue"`
 	Delivery *DeliveryInfo `json:"delivery" bson:"delivery"`
-	Tasks    []Task        `json:"tasks" bson:"tasks"`
+	Tasks    []KitchenTask `json:"tasks" bson:"tasks"`
 }
 
 type SpaceInfo struct {
