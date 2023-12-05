@@ -1,7 +1,8 @@
 package main
 
 import (
-	"Kitchen/kitchen"
+	interfaces "KDS/domain/interface"
+	kitchen "KDS/kitchen_task"
 	"context"
 
 	"github.com/gin-gonic/gin"
@@ -17,16 +18,10 @@ func main() {
 	client, _ := mongo.Connect(mainCtx, options.Client().ApplyURI("mongodb://localhost:27017"))
 	database := client.Database("kitchen")
 
-	TaskOrderRepo := kitchen.New_TaskOrderRepo_Mongo(database)
-	TaskorderUsecase := kitchen.New_TaskOrderUsecase_mongo(TaskOrderRepo)
-
-	HerecticRepo := kitchen.New_TaskOrderRepo_别的数据库(database)
-	HerecticUC := kitchen.New_TaskOrderUsecase_别的数据库(HerecticRepo)
-
-	TaskOrderHandler := kitchen.InitTaskOrderHandler(router, TaskorderUsecase, HerecticUC)
+	var TaskOrderRepo interfaces.TaskOrderRepo = kitchen.New_TaskOrderRepo_Mongo(database)
+	var TaskorderUsecase interfaces.TaskOrderUC = kitchen.New_TaskOrderUsecase_mongo(TaskOrderRepo)
+	TaskOrderHandler := kitchen.InitTaskOrderHandler(router, TaskorderUsecase)
 	TaskOrderHandler.Standby(mainCtx)
 
-	//fmt.Println(TaskOrderHandler.UC.GetKitchenTask(mainCtx, 20))
 	router.Run(":8080")
-
 }

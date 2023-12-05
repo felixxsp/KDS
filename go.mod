@@ -1,4 +1,4 @@
-module Kitchen
+module KDS
 
 go 1.21.3
 
